@@ -21,6 +21,7 @@ class AnimeRepositoryTest {
         Assertions.assertThat(animeSaved).isNotNull();
         Assertions.assertThat(animeSaved.getId()).isNotNull();
         Assertions.assertThat(animeSaved.getName()).isEqualTo(animeToBeSaved.getName());
+        Assertions.assertThat(aok);
 
     }
 
