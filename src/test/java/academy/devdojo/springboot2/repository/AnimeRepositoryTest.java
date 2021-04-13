@@ -2,21 +2,29 @@ package academy.devdojo.springboot2.repository;
 
 import academy.devdojo.springboot2.domain.Anime;
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
 @DisplayName("Tests for Anime Repository")
 @Log4j2
-class AnimeRepositoryTest {
-    @Autowired
+public class AnimeRepositoryTest {
+    @Mock
     private AnimeRepository animeRepository;
+
+    @Before("")
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     @DisplayName("Save persists anime when Successfull")
@@ -69,6 +77,18 @@ class AnimeRepositoryTest {
     void findByName_ReturnsEmptyList_WhenAnimeIsNotFound() {
         List<Anime> animes = this.animeRepository.findByName("xaxa");
         Assertions.assertThat(animes).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Save throw ConstraintViolationException when name is empty")
+    void save_ThrowsConstraintViolationException_WhenNameIsEmpty() {
+        Anime anime = new Anime();
+//        Assertions.assertThatThrownBy(() -> this.animeRepository.save(anime))
+//                .isInstanceOf(ConstraintViolationException.class);
+
+        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> this.animeRepository.save(anime))
+                .withMessageContaining("The anime name cannot be empty");
     }
 
     private Anime createAnime() {
