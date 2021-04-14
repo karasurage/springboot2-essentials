@@ -1,13 +1,12 @@
 package academy.devdojo.springboot2.repository;
 
 import academy.devdojo.springboot2.domain.Anime;
+import academy.devdojo.springboot2.util.AnimeCreator;
 import lombok.extern.log4j.Log4j2;
-import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.validation.ConstraintViolationException;
@@ -18,18 +17,13 @@ import java.util.Optional;
 @DisplayName("Tests for Anime Repository")
 @Log4j2
 public class AnimeRepositoryTest {
-    @Mock
+    @Autowired
     private AnimeRepository animeRepository;
-
-    @Before("")
-    public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("Save persists anime when Successfull")
     void save_PersistAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         Assertions.assertThat(animeSaved).isNotNull();
         Assertions.assertThat(animeSaved.getId()).isNotNull();
@@ -39,7 +33,7 @@ public class AnimeRepositoryTest {
     @Test
     @DisplayName("Save updates anime when Successfull")
     void save_UpdatesAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         animeSaved.setName("Overlord");
         Anime animeUpdated = this.animeRepository.save(animeSaved);
@@ -52,7 +46,7 @@ public class AnimeRepositoryTest {
     @Test
     @DisplayName("Delete removes anime when Successfull")
     void delete_RemovesAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         this.animeRepository.delete(animeSaved);
         Optional<Anime> animeOptional = this.animeRepository.findById(animeSaved.getId());
@@ -62,7 +56,7 @@ public class AnimeRepositoryTest {
     @Test
     @DisplayName("Find By Name returns list of anime when Successfull")
     void findByName_ReturnsListOfAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         String name = animeSaved.getName();
         this.animeRepository.findByName(name);
@@ -91,9 +85,5 @@ public class AnimeRepositoryTest {
                 .withMessageContaining("The anime name cannot be empty");
     }
 
-    private Anime createAnime() {
-        return Anime.builder()
-                .name("Hajime no Ippo")
-                .build();
-    }
+
 }
