@@ -24,9 +24,13 @@ public class AnimeRepositoryTest {
     @DisplayName("Save persists anime when Successfull")
     void save_PersistAnime_WhenSuccessful() {
         Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
+
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
+
         Assertions.assertThat(animeSaved).isNotNull();
+
         Assertions.assertThat(animeSaved.getId()).isNotNull();
+
         Assertions.assertThat(animeSaved.getName()).isEqualTo(animeToBeSaved.getName());
     }
 
@@ -34,12 +38,19 @@ public class AnimeRepositoryTest {
     @DisplayName("Save updates anime when Successfull")
     void save_UpdatesAnime_WhenSuccessful() {
         Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
+
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
+
         animeSaved.setName("Overlord");
+
         Anime animeUpdated = this.animeRepository.save(animeSaved);
+
         log.info(animeUpdated.getName());
+
         Assertions.assertThat(animeUpdated).isNotNull();
+
         Assertions.assertThat(animeUpdated.getId()).isNotNull();
+
         Assertions.assertThat(animeUpdated.getName()).isEqualTo(animeSaved.getName());
     }
 
@@ -47,9 +58,13 @@ public class AnimeRepositoryTest {
     @DisplayName("Delete removes anime when Successfull")
     void delete_RemovesAnime_WhenSuccessful() {
         Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
+
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
+
         this.animeRepository.delete(animeSaved);
+
         Optional<Anime> animeOptional = this.animeRepository.findById(animeSaved.getId());
+
         Assertions.assertThat(animeOptional).isEmpty();
     }
 
@@ -57,10 +72,15 @@ public class AnimeRepositoryTest {
     @DisplayName("Find By Name returns list of anime when Successfull")
     void findByName_ReturnsListOfAnime_WhenSuccessful() {
         Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
+
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
+
         String name = animeSaved.getName();
+
         this.animeRepository.findByName(name);
+
         List<Anime> animes = this.animeRepository.findByName(name);
+
         Assertions.assertThat(animes)
                 .isNotEmpty()
                 .contains(animeSaved);
@@ -70,6 +90,7 @@ public class AnimeRepositoryTest {
     @DisplayName("Find By Name returns empty list owhen no anime is found")
     void findByName_ReturnsEmptyList_WhenAnimeIsNotFound() {
         List<Anime> animes = this.animeRepository.findByName("xaxa");
+
         Assertions.assertThat(animes).isEmpty();
     }
 
@@ -84,6 +105,4 @@ public class AnimeRepositoryTest {
                 .isThrownBy(() -> this.animeRepository.save(anime))
                 .withMessageContaining("The anime name cannot be empty");
     }
-
-
 }
